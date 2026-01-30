@@ -11,6 +11,8 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -22,7 +24,13 @@
             <!-- Page Heading -->
             <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <h1 class="text-3xl font-bold text-gray-900">Tableau de Bord</h1>
+                    @if (request()->routeIs('dashboard.index'))
+                    <h1 class="text-3xl font-bold text-gray-900">{{ __('Dashboard Management') }}</h1>
+                    @elseif (request()->routeIs('task.index'))
+                    <h1 class="text-3xl font-bold text-gray-900">{{ __('Tasks Management') }}</h1>
+                    @elseif (request()->routeIs('search.index'))
+                    <h1 class="text-3xl font-bold text-gray-900">{{ __('Search Management') }}</h1>
+                    @endif
                 </div>
             </header>
 

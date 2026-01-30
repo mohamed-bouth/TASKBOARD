@@ -7,64 +7,57 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
                 <div class="bg-white p-4 rounded-xl shadow border-l-4 border-indigo-500">
                     <div class="text-gray-500 text-sm">Total Tâches</div>
-                    <div class="text-2xl font-bold" id="statTotal">0</div>
+                    <div class="text-2xl font-bold" id="statTotal">{{ $totalTasks }}</div>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow border-l-4 border-gray-400">
-                    <div class="text-gray-500 text-sm">À faire</div>
-                    <div class="text-2xl font-bold" id="statTodo">0</div>
+                    <div class="text-gray-500 text-sm">Todo</div>
+                    <div class="text-2xl font-bold" id="statTodo">{{ $todoTasks }}</div>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow border-l-4 border-blue-400">
-                    <div class="text-gray-500 text-sm">En cours</div>
-                    <div class="text-2xl font-bold" id="statInProgress">0</div>
+                    <div class="text-gray-500 text-sm">id progress</div>
+                    <div class="text-2xl font-bold" id="statInProgress">{{ $inProgressTasks }}</div>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow border-l-4 border-green-500">
-                    <div class="text-gray-500 text-sm">Terminées</div>
-                    <div class="text-2xl font-bold" id="statDone">0</div>
+                    <div class="text-gray-500 text-sm">Done</div>
+                    <div class="text-2xl font-bold" id="statDone">{{ $doneTasks }}</div>
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow border-l-4 border-red-500 flex flex-col justify-between">
                     <div>
-                        <div class="text-red-500 text-sm font-bold">⚠ En Retard: <span id="statOverdue">0</span></div>
+                        <div class="text-red-500 text-sm font-bold">⚠ En Retard: <span id="statOverdue">{{ $inDangerTasks }}</span></div>
                     </div>
                     <div class="mt-2">
                         <div class="text-xs text-gray-500 text-right mb-1">Achèvement</div>
-                        <div class="w-full bg-gray-200 rounded-full h-2.5">
-                            <div id="progressBar" class="bg-green-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        <div class="flex flex flex items-center gap-1">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 flex">
+                                <div id="progressBar" class="bg-green-600 h-2.5 rounded-full transition-all duration-500" style="width: {{ $completionPercentage }}%"></div>
+                            </div>
+                            <div class="text-gray-700">{{ $completionPercentage }}%</div>
                         </div>
                     </div>
+
                 </div>
             </div>
-
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-semibold text-gray-800">Mes Tâches (Kanban)</h2>
-
-                <div class="flex items-center space-x-2 bg-white p-2 rounded-lg shadow-sm">
-                    <button onclick="changePage(-1)" class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" id="btnPrev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <span class="text-sm font-medium">Page <span id="currentPageDisplay">1</span></span>
-                    <button onclick="changePage(1)" class="p-1 hover:bg-gray-100 rounded disabled:opacity-50" id="btnNext">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-gray-200 p-4 rounded-lg h-fit min-h-[300px]">
                     <h3 class="font-bold text-gray-700 mb-4 flex items-center">
                         <span class="w-3 h-3 bg-gray-400 rounded-full mr-2"></span> À FAIRE
                     </h3>
-                    <div class="space-y-3">
+                    <div id="todo-list" data-status="todo" class="space-y-3">
                         @foreach ($tasks as $task)
                         @if($task->status == 'todo')
-                        <div class="bg-white p-3 rounded shadow hover:shadow-md transition mb-3 border-l-4 border-indigo-500">
+                        <div data-id="{{ $task->id }}" class="task-card  bg-white p-3 rounded shadow hover:shadow-md transition mb-3 border-l-4 border-indigo-500">
                             <div class="flex justify-between items-start mb-2">
-                            @if($task->priority == 'high')
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100">{{ $task->priority }}</span>
-                            @elseif($task->priority == 'medium')
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-100">{{ $task->priority }}</span>
-                            @else
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-green-100">{{ $task->priority }}</span>
-                            @endif
-                                <span class="text-xs text-gray-400">{{ $task->created_at->format('Y-m-d') }}</span>
+                                @if($task->priority == 'high')
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100">{{ $task->priority }}</span>
+                                @elseif($task->priority == 'medium')
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-100">{{ $task->priority }}</span>
+                                @else
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-green-100">{{ $task->priority }}</span>
+                                @endif
+                                <span class="text-xs text-gray-400">{{ $task->expiry_date }}</span>
                             </div>
 
                             <h4 class="font-bold text-gray-800 mb-1">{{ $task->title }}</h4>
@@ -99,18 +92,18 @@
                     <h3 class="font-bold text-blue-700 mb-4 flex items-center">
                         <span class="w-3 h-3 bg-blue-400 rounded-full mr-2"></span> EN COURS
                     </h3>
-                    <div class="space-y-3">
+                    <div id="inprogress-list" data-status="in_progress" class="space-y-3">
                         @foreach ($tasks as $task)
                         @if($task->status == 'in_progress')
-                        <div class="bg-white p-3 rounded shadow hover:shadow-md transition mb-3 border-l-4 border-blue-500">
+                        <div data-id="{{ $task->id }}" class="task-card bg-white p-3 rounded shadow hover:shadow-md transition mb-3 border-l-4 border-blue-500">
                             <div class="flex justify-between items-start mb-2">
-                            @if($task->priority == 'high')
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100">{{ $task->priority }}</span>
-                            @elseif($task->priority == 'medium')
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-100">{{ $task->priority }}</span>
-                            @else
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-green-100">{{ $task->priority }}</span>
-                            @endif
+                                @if($task->priority == 'high')
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100">{{ $task->priority }}</span>
+                                @elseif($task->priority == 'medium')
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-100">{{ $task->priority }}</span>
+                                @else
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-green-100">{{ $task->priority }}</span>
+                                @endif
                                 <span class="text-xs text-gray-400">{{ $task->created_at->format('Y-m-d') }}</span>
                             </div>
                             <h4 class="font-bold text-gray-800 mb-1">{{ $task->title }}</h4>
@@ -143,18 +136,18 @@
                     <h3 class="font-bold text-green-700 mb-4 flex items-center">
                         <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span> TERMINÉ
                     </h3>
-                    <div class="space-y-3">
+                    <div id="done-list" data-status="done" class="space-y-3">
                         @foreach ($tasks as $task)
                         @if($task->status == 'done')
-                        <div class="bg-white p-3 rounded shadow hover:shadow-md transition mb-3 border-l-4 border-green-500 opacity-75">
+                        <div data-id="{{ $task->id }}" class="task-card bg-white p-3 rounded shadow hover:shadow-md transition mb-3 border-l-4 border-green-500 opacity-75">
                             <div class="flex justify-between items-start mb-2">
-                            @if($task->priority == 'high')
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100">{{ $task->priority }}</span>
-                            @elseif($task->priority == 'medium')
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-100">{{ $task->priority }}</span>
-                            @else
-                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-green-100">{{ $task->priority }}</span>
-                            @endif
+                                @if($task->priority == 'high')
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-100">{{ $task->priority }}</span>
+                                @elseif($task->priority == 'medium')
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-yellow-100">{{ $task->priority }}</span>
+                                @else
+                                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-green-100">{{ $task->priority }}</span>
+                                @endif
                                 <span class="text-xs text-gray-400">{{ $task->created_at->format('Y-m-d') }}</span>
                             </div>
                             <h4 class="font-bold text-gray-800 mb-1 line-through">{{ $task->title }}</h4>
@@ -180,7 +173,10 @@
                         @endforeach
                     </div>
                 </div>
+            </div>
 
+            <div class="bg-white p-2 rounded-lg shadow-sm">
+                {{ $tasks->links() }}
             </div>
         </main>
     </div>
@@ -207,3 +203,42 @@
         </div>
     </div>
 </x-app-layout>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // كنقلبو على الأعمدة بـ 3
+        const columns = [
+            document.getElementById('todo-list'),
+            document.getElementById('inprogress-list'),
+            document.getElementById('done-list')
+        ];
+
+        columns.forEach(column => {
+            new Sortable(column, {
+                group: 'kanban',
+                animation: 150,
+                ghostClass: 'bg-blue-100',
+                onEnd: function (evt) {
+                    let itemEl = evt.item;
+                    let newStatus = evt.to.getAttribute('data-status');
+                    let taskId = itemEl.getAttribute('data-id');
+
+                    updateTaskStatus(taskId, newStatus);
+                }
+            });
+        });
+
+        function updateTaskStatus(id, status) {
+            axios.patch(`/tasks/${id}/update-status`, {
+                status: status,
+                _token: '{{ csrf_token() }}'
+            })
+            .then(response => {
+                console.log('Status updated!');
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Unknown Error');
+            });
+        }
+    });
+</script>

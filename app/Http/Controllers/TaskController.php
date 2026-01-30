@@ -12,6 +12,8 @@ class TaskController extends Controller
 
     public function index(){
         $tasks = Task::where('user_id', Auth::id())->get();
+
+        $totalTasks = $tasks->count();
         return view('task.index' , compact('tasks'));
     }
 
@@ -87,5 +89,15 @@ class TaskController extends Controller
 
         return redirect()->route('task.index')
         ->with('success', 'Task edited successfully.');
+    }
+
+    public function updateStatus(Request $request, Task $task){
+        $request->validate([
+        'status' => 'required|in:todo,in_progress,done'
+        ]);
+
+        $task->update(['status' => $request->status]);
+
+        return response()->json(['message' => 'Task updated successfully']);
     }
 }

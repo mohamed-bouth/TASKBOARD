@@ -22,11 +22,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/task/store/{id}', [TaskController::class , 'destroy'])->name('task.destroy');
     Route::get('/task/{task}/edit', [TaskController::class, 'edit'])->name('task.edit');
     Route::put('/task/{task}', [TaskController::class, 'update'])->name('task.update');
+    Route::patch('/tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('task.updateStatus');
 });
 
 
-Route::get('/search', [SearchController::class , 'index'])->middleware(['auth', 'verified'])->name('search.index');
 
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/search', [SearchController::class , 'index'])->name('search.index');
+    Route::get('/search/filter', [SearchController::class , 'search'])->name('search.filter');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
