@@ -22,14 +22,14 @@
             @include('layouts.navigation')
 
             <!-- Page Heading -->
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <header class="bg-gradient-to-r from-indigo-900 to-blue-800 mt-0.1">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-start items-center h-[100px]">
                     @if (request()->routeIs('dashboard.index'))
-                    <h1 class="text-3xl font-bold text-gray-900">{{ __('Dashboard Management') }}</h1>
+                    <h1 class="text-3xl font-bold text-white">{{ __('Dashboard Management') }}</h1>
                     @elseif (request()->routeIs('task.index'))
-                    <h1 class="text-3xl font-bold text-gray-900">{{ __('Tasks Management') }}</h1>
+                    <h1 class="text-3xl font-bold text-white">{{ __('Tasks Management') }}</h1>
                     @elseif (request()->routeIs('search.index'))
-                    <h1 class="text-3xl font-bold text-gray-900">{{ __('Search Management') }}</h1>
+                    <h1 class="text-3xl font-bold text-white">{{ __('Search Management') }}</h1>
                     @endif
                 </div>
             </header>
@@ -39,5 +39,6 @@
                 {{ $slot }}
             </main>
         </div>
+        @include('layouts.footer')
     </body>
 </html>
